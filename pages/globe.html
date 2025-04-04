@@ -25,6 +25,32 @@
           <button id="logOutButton">Log Out</button>
         </div>
     </header>
+    <div id="map">
+        <div class="customization">
+            <div class="flex1">
+                <h3 class="mode">Mode: Light</h3>
+                <div class="container">
+                    <input type="checkbox" id="check">
+                    <label for="check" class="modeButton"></label>
+                </div>
+            </div>
+            <div class="flex2">
+                <h3 class="spin">Spinning: Off</h3>
+                <div class="container1">
+                    <input type="checkbox" id="check1">
+                    <label for="check1" class="modeButton1"></label>
+                </div>
+            </div>
+        </div>
+        <div id="plusButton">
+            <i class="bi bi-plus-circle-fill"></i>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle-fill" viewBox="0 0 16 16">
+                <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3z"/>
+            </svg>
+        </div>
+        <div class="weatherDisplay"></div>
+    </div>
+
     <div class="menu">
       <a href="index.html">
           <div class="menuGlobe">
@@ -70,10 +96,48 @@
           </div>
       </div>
   </div>
+  <h4 class="numberOfPosts">Posts:</h4>
+    <h4 class="numberOfCountries">Countries Visited: 0</h4>
+    <h2 class="text">Click to add a point on the map</h2>
+    <dialog id="confirmCloseButton">
+        <form method="dialog">
+            <p class="discardMessage">Discard unsaved changes?</p>
+            <div class="buttonContainer">
+                <button id="cancelButton">Cancel</button>
+                <button id="discardButton">Discard</button>
+            </div>
+        </form>
+    </dialog>
+    <dialog id="confirmLocation">
+        <button class="exit-button2">&times;</button>
+        <form method="dialog">
+            <p class="discardMessage">Where do you want to post?</p>
+            <div class="buttonContainer">
+                <button id="currentLocationButton">Current Location</button>
+                <button id="somewhereElseButton">Somewhere Else</button>
+            </div>
+        </form>
+    </dialog>
+    <dialog id="entry">
+        <div class="centered">
+        <button class="exit-button">&times;</button>
+        <input class="description" type="text" name="description" placeholder="Tell the world!">
+        <div class="group">
+            <h4 class="post-text">Upload an Image: </h4>
+            <input type="file" id="imageInput" accept="image/*"/>
+        </div>
+        <img id="imagePreview" style="display:none; max-height: 200px; max-width: 400px; margin: 10px auto;" />
+        <button type="submit" id="submitButton">Post</button>
+        </div>
+    </dialog>
+
+    <!--
     <h2>Welcome to Globit</h2>
     <input type="file" id="imageInput" accept="image/*">
     <button id="uploadButton">Upload Image</button>
     <button id="retrieveButton">Retrieve All Images</button>
+    -->
+
     <script src="https://api.mapbox.com/mapbox-gl-js/v3.8.0/mapbox-gl.js"></script>
     <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.0/mapbox-gl-geocoder.min.js"></script>
     <script src="../scripts/pages/globe.js" type="module"></script>

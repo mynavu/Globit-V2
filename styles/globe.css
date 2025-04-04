@@ -5,6 +5,7 @@ body {
     overflow: hidden;
   }
 
+
   #map {
     top: 0px;
     width: 100%;
@@ -13,7 +14,7 @@ body {
     z-index: 2;
   }
 
-  #customButton {
+  #plusButton {
     position: absolute;
     bottom: 100px;
     left: 40px;
@@ -21,10 +22,10 @@ body {
     width: 50px;
     z-index: 1;
     cursor: pointer;
-    display: flex;
+    display: none;
   }
   
-  #customButton i:hover {
+  #plusButton i:hover {
     background: -webkit-linear-gradient(top, var(--orange) 0%, #ffad7a 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -34,7 +35,7 @@ body {
     margin-top: -6px;
   }
   
-  #customButton svg {
+  #plusButton svg {
     position: absolute;
     stroke: black;
     stroke-width: 1.7px;
@@ -45,7 +46,7 @@ body {
     transform: translateY(-7%);
   }
   
-  #customButton i {
+  #plusButton i {
     background: -webkit-linear-gradient(top, #ffad7a 40%, var(--orange) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;

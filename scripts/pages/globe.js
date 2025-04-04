@@ -1,15 +1,22 @@
 import { supabase } from '../utils/supabaseClient.js'
+import { matchList } from '../utils/matchList.js'
+import { totalStamps } from '../utils/totalStamps.js'
+
+mapboxgl.accessToken = 'pk.eyJ1IjoibXluYXZ1IiwiYSI6ImNtM3NzaWhpejAxM3Qya29tcTltOGhqd2EifQ.NF_TfdXji0T4Mn-qDeyzQw';
+const submitButton = document.getElementById('submitButton');
+const plusButton = document.getElementById('plusButton');
+
+
 
 document.addEventListener("DOMContentLoaded", async () => {
-    const { data: { session }, error } = await supabase.auth.getSession();
 
+    const { data: { session }, error } = await supabase.auth.getSession();
     if (!session || error) {
         alert("You have to login")
         window.location.href = "index.html";
         return;
     }
-
-    console.log(session.user.email)
+    console.log("session.user",session.user)
 
     const { data: userData, error: dataError } = await supabase
     .from('users')
@@ -18,18 +25,91 @@ document.addEventListener("DOMContentLoaded", async () => {
     .single();
     console.log(`Welcome user: ${JSON.stringify(userData.username)}`)
     console.log(userData);
+    const userID = userData.id;
+
+    const {data: listOfPosts, error: listOfPostsErrors } = await supabase
+    .from('posts')
+    .select()
+    .eq('user_id', userID);
+    if (listOfPostsErrors) {
+        console.log("error",listOfPostsErrors.message);
+    }
+    console.log("listOfPosts", listOfPosts);
+
+    let geojson = {
+        "type": "FeatureCollection",
+        "features": listOfPosts.map(row => ({
+            type: 'Feature',
+            geometry: { 
+                type: 'Point', 
+                coordinates: [row.longitude, row.latitude] 
+            },
+            properties: {
+                description: row.caption,
+                country: row.country,
+                location: row.location_name
+            }
+        }))
+      };
+      console.log("geojson",geojson);
+
+    let map = new mapboxgl.Map({
+        container: 'map',
+        style: 'mapbox://styles/mynavu/cm3std23v009l01sd8csudg7h', // Light mode
+        projection: 'globe',
+        zoom: 1.5,
+        center: [-90, 40]
+    });
+
+    map.on('load', () => {
+        plusButton.style.display = 'flex';
+        
+    });
+    
+    map.on('style.load', () => {
+        plusButton.style.display = 'flex';
+        
+    });
+
+    function addPointsLayer(map, geojson) {
+        if (!map.getSource('points')) {
+            map.addSource('points', {
+                type: 'geojson',
+                data: geojson
+            });
+        }
+        if (!map.getLayer('points-layer')) {
+            map.loadImage('./pointer1.png', (error, image) => {
+                if (error) throw error;
+                if (!map.hasImage('custom-pointer')) {
+                    map.addImage('custom-pointer', image);
+                }
+                map.addLayer({
+                    id: 'points-layer',
+                    type: 'symbol',
+                    source: 'points',
+                    layout: {
+                        'icon-image': 'custom-pointer',
+                        'icon-size': 0.07,
+                        'icon-allow-overlap': true,
+                        'icon-offset': [0, -280]
+                    }
+                });
+            });
+        }
+    }
+
+
 
     const logOutButton = document.getElementById("logOutButton")
     logOutButton.addEventListener("click", async () => {
         const { error: logOutError } = await supabase.auth.signOut()
         if (logOutError) {
             alert("Theres an error: ", logOutError.message);
-
         } else {
             alert("Logout successfully!");
             window.location.href = '../../pages/index.html'
         }
-
     })
 
     const imageInput = document.getElementById("imageInput");
