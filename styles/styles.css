@@ -1,0 +1,320 @@
+:root {
+    --orange: #ff7825;
+    --green: #9bff38;
+    --yellow: #fffc00;
+    --blue: #6bd8ff;
+    --red: #fa4e1d;
+    --white: #ffffff;
+    --light-orange: #ffad7a;
+    --pink: #ff79a5;
+    --mid-orange: #ff904c;
+  }
+
+  header {
+    height: 80px;
+    width: 100%;
+    background: -webkit-linear-gradient(top, var(--light-orange) 0%, var(--orange) 50%);
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    align-items: center;
+    border-bottom: black solid 3px;
+    z-index: 2;
+  }
+
+  .menu {
+    height: auto;
+    width: 120px;
+    border-radius: 20px;
+    background: -webkit-linear-gradient(top, #ffad7a 0%, var(--orange) 100%);
+    position: fixed;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 5px 5px 0 0px black;
+    border: 2px solid black;
+    z-index: 2;
+    left: 20px;
+    top: 100px;
+    justify-content: space-around;
+    display: flex;
+  }
+
+  .menu svg {
+    stroke: black;
+    stroke-width: 1.7px;
+    overflow: visible;
+    width: 30px;
+    height: 30px;
+    transform: translate(-100%, 2%);
+  }
+  
+  .menuGlobe i {
+    background: linear-gradient(1800deg, var(--green) 0%, #ffffff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-size: 30px;
+    position: relative;
+    z-index: 1;
+  }
+  
+  .menuGlobe {
+    z-index: 1;
+    margin-left: 10px;
+    width: 100%;
+    display: inline-block;
+  }
+
+  .menuHome i {
+    background: linear-gradient(1800deg, var(--red) 0%, #ffffff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-size: 30px;
+    position: relative;
+    z-index: 1;
+  }
+  
+  .menuHome {
+    z-index: 1;
+    display: inline-block;
+    margin-left: 10px;
+    width: 100%;
+    display: inline-block;
+  }
+  
+  .menuHome p {
+    margin-left: 50px;
+  }
+  
+  
+  .Icon:hover {
+    background: -webkit-linear-gradient(top, white 0%, var(--light-orange) 20%);
+    border-bottom: solid 5px black;
+    border-right: solid 5px black;
+    border-top: solid 2px black;
+    border-left: solid 2px black;
+  }
+  
+  .menuStar i {
+    background: linear-gradient(1800deg, var(--blue) 0%, #ffffff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-size: 30px;
+    position: relative;
+    z-index: 1;
+  }
+  
+  .menuStar {
+    z-index: 1;
+    display: inline-block;
+    margin-left: 10px;
+    width: 100%;
+  
+  }
+  
+  .menuStar p {
+    margin-left: 50px;
+  }
+  
+  .menuFriend i {
+    background: linear-gradient(1800deg, var(--yellow) 0%, #ffffff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-size: 30px;
+    position: relative;
+    z-index: 1;
+  }
+  
+  .menuFriend {
+    z-index: 1;
+    display: inline-block;
+    margin-left: 10px;
+    width: 100%;
+  }
+  
+  .menuFriend:hover {
+    cursor: pointer;
+  }
+  
+  .menuFriend p {
+    margin-left: 50px;
+  }
+  
+  .customization {
+    left: unset;
+    bottom: 55px;
+    top: unset;
+    right: 65px;
+    padding-top: 12px;
+    padding-bottom: 12px;
+    width: 100px;
+    z-index: 4;
+    position: absolute;
+    box-shadow: 3px 3px 0 0px black;
+  }
+
+  .flex1 {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+  }
+
+  .flex2 {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+  }
+
+  .mode {
+    font-weight: 650;
+    color: black;
+    margin-left: 10px;
+    font-size: 14px;
+  }
+
+  .mode, .spin {
+    display: none;
+}
+
+.container {
+    top: 10px;
+    left: 130px;
+    width: 50px;
+    height: 25px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 10px;
+  }
+
+  .container1 {
+    top: 50px;
+    left: 130px;
+    width: 50px;
+    height: 25px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 10px;
+  }
+  
+  .modeButton1 {
+    background-color: var(--blue);
+    width: 50px;
+    height: 25px;
+    border-radius: 50px;
+    cursor: pointer;
+    position: relative;
+    transition: 0.2s;
+  }
+  
+  .modeButton1::before {
+    position: absolute;
+    content: "";
+    background-color: var(
+      --before-background-color,
+      #fffc00
+    );
+    box-shadow: var(--before-box-shadow, 0px 0px 10px 1px #fffc00);
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    margin: 2.5px;
+    transition: 0.2s;
+  }
+  
+  input:checked + .modeButton1::before {
+    transform: translateX(25px);
+  }
+
+  .modeButton::before {
+    position: absolute;
+    content: "";
+    background-color: #fffc00;
+    box-shadow: 0px 0px 10px 1px #fffc00;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    margin: 2.5px;
+    transition: 0.2s;
+  }
+  
+  input:checked + .modeButton {
+    background-color: #001f61;
+  }
+  
+  input:checked + .modeButton::before {
+    transform: translateX(25px);
+    background-color: #ffffff;
+    box-shadow: 0px 0px 10px 1px #ffffff;
+  }
+
+
+  .Icon {
+    height: 52px;
+    width: 100%;
+    border-radius: 18px;
+    margin-left: -10px;
+    padding-left: 10px;
+    display: flex;
+    align-items: center;
+  }
+
+  .globit_logo {
+    height: 75px;
+    width: auto;
+    margin-left: 20px;
+    position: relative;
+    z-index: 3;
+  }
+
+  .profile {
+    grid-column: 12;
+    display: flex;
+    height: 100%;
+    width: 100%;
+    position: relative;
+  }
+
+  .pfp {
+    position: relative;
+    align-self: flex-end;
+    left: 0px;
+    width: 80px;
+    right: 80px;
+  }
+  
+  .username {
+    color: black;
+    right: 23px;
+    font-weight: 700;
+    align-self: center;
+    position: relative;
+    bottom: 10px;
+    left: -10px;
+  }
+  
+  .status {
+    color: black;
+    font-weight: 500;
+    align-self: center;
+    position: relative;
+    top: 10px;
+    left: -60px;
+  }
+  
+  .online {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border-style: solid;
+    border-width: 3px;
+    border-color: var(--orange);
+    background-color: #00bf63;
+    align-self: flex-end;
+    left: -30px;
+    position: relative;
+    bottom: 10px;
+  }
+
+  
