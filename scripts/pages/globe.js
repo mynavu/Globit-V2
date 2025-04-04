@@ -19,11 +19,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     console.log(`Welcome user: ${JSON.stringify(userData.username)}`)
     console.log(userData);
 
-    const logoutButton = document.getElementById("logoutButton")
-    logoutButton.addEventListener("click", async () => {
-        const { error: logoutError } = await supabase.auth.signOut()
-        if (logoutError) {
-            alert("Theres an error: ", logoutError.message);
+    const logOutButton = document.getElementById("logOutButton")
+    logOutButton.addEventListener("click", async () => {
+        const { error: logOutError } = await supabase.auth.signOut()
+        if (logOutError) {
+            alert("Theres an error: ", logOutError.message);
 
         } else {
             alert("Logout successfully!");

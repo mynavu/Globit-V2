@@ -20,13 +20,10 @@
   </head>
   <body>
     <header class="header">
-      <img class="globit_logo" src="../assets/globit_logo.png">
-      <div class="profile">
-          <img class="pfp" src="../assets/earth_pfp.png">
-          <div class="online"></div>
-          <h4 class="username">@Guest</h4>
-          <h5 class="status">Online</h5>
-      </div>
+        <img class="globit_logo" src="../assets/globit_logo.png">
+        <div class="logOut">
+          <button id="logOutButton">Log Out</button>
+        </div>
     </header>
     <div class="menu">
       <a href="index.html">
@@ -77,7 +74,6 @@
     <input type="file" id="imageInput" accept="image/*">
     <button id="uploadButton">Upload Image</button>
     <button id="retrieveButton">Retrieve All Images</button>
-    <button id="logoutButton">Logout</button>
     <script src="https://api.mapbox.com/mapbox-gl-js/v3.8.0/mapbox-gl.js"></script>
     <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.0/mapbox-gl-geocoder.min.js"></script>
     <script src="../scripts/pages/globe.js" type="module"></script>

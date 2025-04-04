@@ -4,3 +4,292 @@ body {
     background: var(--white);
     overflow: hidden;
   }
+
+  #map {
+    top: 0px;
+    width: 100%;
+    height: calc(100vh - 80px);
+    display: block;
+    z-index: 2;
+  }
+
+  #customButton {
+    position: absolute;
+    bottom: 100px;
+    left: 40px;
+    height: 50px;
+    width: 50px;
+    z-index: 1;
+    cursor: pointer;
+    display: flex;
+  }
+  
+  #customButton i:hover {
+    background: -webkit-linear-gradient(top, var(--orange) 0%, #ffad7a 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-size: 80px;
+    position: absolute;
+    z-index: 1;
+    margin-top: -6px;
+  }
+  
+  #customButton svg {
+    position: absolute;
+    stroke: black;
+    stroke-width: 1.7px;
+    overflow: visible;
+    position: absolute;
+    width: 80px;
+    height: 80px;
+    transform: translateY(-7%);
+  }
+  
+  #customButton i {
+    background: -webkit-linear-gradient(top, #ffad7a 40%, var(--orange) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-size: 80px;
+    position: absolute;
+    z-index: 1;
+    margin-top: -6px;
+    /* text-shadow: 10px 10px #ffffff; */
+  }
+
+.bi-pen-fill,
+.bi-trash-fill {
+  margin-left: 5px;
+}
+
+.weatherDisplay {
+    display: none;
+    font-size: 15px;
+    height: 35px;
+    width: auto;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+    position: absolute;
+    right: 60px;
+    bottom: 30px;
+    background: white;
+    z-index: 3;
+    border: black solid 3px;
+    border-radius: 20px;
+    box-shadow: 2px 2px 0 0px black;
+}
+
+.numberOfPosts {
+    color: #ffffff;
+    position: absolute;
+    right: 100px;
+    bottom: 20px;
+    z-index: 3;
+    display: none;
+  }
+  
+  .numberOfCountries {
+    color: #ffffff;
+    position: absolute;
+    right: 100px;
+    bottom: 50px;
+    z-index: 3;
+    display: none;
+  }
+
+  .text {
+    font-family: "Noto Sans Display", sans-serif;
+    display: none;
+    position: absolute;
+    bottom: 30px;
+    left: 30px;
+    color: var(--orange);
+    text-shadow: 0 0 10px #ffffff, 0 0 20px #ffffff, 0 0 30px #ffffff;
+    opacity: 0; /* Start hidden */
+    animation: fadeInOut 2s ease-in-out infinite;
+    z-index: 3;
+  }
+
+  #confirmCloseButton {
+    margin: auto;
+    height: 100px;
+    width: 200px;
+    background-color: white;
+    border-radius: 20px;
+    border-type: solid;
+    border-width: 2px;
+    border-color: black;
+    box-shadow: 5px 5px 0 0px black;
+    box-sizing: content-box;
+  }
+
+  .discardMessage {
+    font-weight: 500;
+    text-align: center;
+  }
+  
+  .buttonContainer {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+  }
+
+  #cancelButton {
+    background: var(--orange);
+    color: white;
+    width: auto;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 12px;
+    padding-right: 12px;
+    border-radius: 20px;
+    border: black solid 2px;
+    display: inline-flex;
+    cursor: pointer;
+    margin-right: 5px;
+  }
+  
+  #discardButton {
+    margin-left: 5px;
+    background: var(--orange);
+    color: white;
+    width: auto;
+    padding: 10px;
+    border-radius: 20px;
+    border: black solid 2px;
+    display: inline-flex;
+    cursor: pointer;
+  }
+
+  #confirmLocation {
+    margin: auto;
+    height: 100px;
+    width: 300px;
+    background-color: white;
+    border-radius: 20px;
+    border-type: solid;
+    border-width: 2px;
+    border-color: black;
+    box-shadow: 5px 5px 0 0px black;
+    box-sizing: content-box;
+  }
+
+  .exit-button2 {
+    position: absolute;
+    color: black;
+    top: 2px;
+    right: 5px;
+    background: transparent;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+  }
+
+  #currentLocationButton {
+    text-align: center;
+    background: var(--orange);
+    color: white;
+    width: auto;
+    padding: 10px;
+    border-radius: 20px;
+    border: black solid 2px;
+    display: inline-flex;
+    cursor: pointer;
+  }
+  
+  #somewhereElseButton {
+    background: var(--orange);
+    color: white;
+    width: auto;
+    padding: 10px;
+    border-radius: 20px;
+    border: black solid 2px;
+    display: inline-flex;
+    cursor: pointer;
+  }
+
+  #entry {
+    background: -webkit-linear-gradient(top, #ffad7a 0%, var(--orange) 100%);
+    border: 2px solid black;
+    width: 400px;
+    position: absolute;
+    z-index: 1;
+    border-radius: 30px;
+    padding: 10px;
+    box-shadow: 5px 5px 0 0px black;
+    box-sizing: content-box;
+  }
+
+  .centered {
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    display: flex;
+  }
+
+  input {
+    display: block;
+  }
+
+  input[type="text"].description {
+    background-color: #ffffff;
+    color: black;
+    border: none;
+    margin: 18px auto auto auto;
+    height: 30px;
+    width: 95%;
+    border-radius: 20px;
+    border: solid black 2px;
+    padding-left: 5px;
+  }
+
+  input[type="text"]:focus {
+    border: solid black 2px;
+    outline: none; /* This removes the blue border */
+  }
+  
+  input[type="file"] {
+  }
+  
+  input::file-selector-button {
+    font-weight: bold;
+    background: #ffffff;
+    color: black;
+    height: 30px;
+    border: black solid 2px;
+    border-radius: 15px;
+    padding: 6px;
+  }
+  
+  input::file-selector-button:hover {
+    cursor: pointer;
+  }
+
+  .group {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    top: 90px;
+    margin-top: 15px;
+  }
+
+  .post-text {
+    margin: 10px auto;
+  }
+
+  #submitButton {
+    width: 100px;
+    font-weight: bold;
+    background: #ffffff;
+    color: black;
+    border: solid black 2px;
+    border-radius: 50px;
+    padding: 5px;
+    margin-top: 10px;
+  }
+  
+  #submitButton:hover {
+    cursor: pointer;
+  }

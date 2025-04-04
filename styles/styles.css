@@ -126,26 +126,26 @@ i {
   }
 
   .customization {
-    left: unset;
-    bottom: 55px;
-    top: unset;
-    right: 65px;
-    padding-top: 12px;
-    padding-bottom: 12px;
-    width: 100px;
-    z-index: 4;
-    position: absolute;
-    box-shadow: 3px 3px 0 0px black;
+    height: auto;
+    width: 170px;
+    border-radius: 20px;
+    background: -webkit-linear-gradient(top, var(--light-orange) 0%, var(--orange) 100%);
+    border: 2px solid black;
+    box-shadow: 5px 5px 0 0px black;
+    z-index: 3;
+    left: 20px;
+    top: 330px;
+    display: none;
+    flex-direction: column;
+    position: fixed;
+    gap: 5px;
   }
 
-  .flex1 {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: space-around;
+  .customization input {
+    display: none;
   }
 
-  .flex2 {
+  .flex1, .flex2 {
     width: 100%;
     display: flex;
     align-items: center;
@@ -244,51 +244,21 @@ i {
     z-index: 3;
   }
 
-  .profile {
+.logOut {
     grid-column: 12;
-    display: flex;
-    height: 100%;
-    width: 100%;
-    position: relative;
-  }
+}
 
-  .pfp {
-    position: relative;
-    align-self: flex-end;
-    left: 0px;
-    width: 80px;
-    right: 80px;
-  }
-  
-  .username {
+#logOutButton {
+    background-color: white;
+    width: auto;
+    padding: 3px 10px 3px 10px;
+    border-radius: 20px;
+    border: black solid 2px;
     color: black;
-    right: 23px;
     font-weight: 700;
-    align-self: center;
+    display: inline-block;
+    text-align: center;
     position: relative;
-    bottom: 10px;
-    left: -10px;
+    cursor: pointer;
   }
   
-  .status {
-    color: black;
-    font-weight: 500;
-    align-self: center;
-    position: relative;
-    top: 10px;
-    left: -60px;
-  }
-  
-  .online {
-    width: 18px;
-    height: 18px;
-    border-radius: 50%;
-    border-style: solid;
-    border-width: 3px;
-    border-color: var(--orange);
-    background-color: var(--dark-green);
-    align-self: flex-end;
-    left: -30px;
-    position: relative;
-    bottom: 10px;
-  }
