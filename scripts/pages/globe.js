@@ -336,10 +336,53 @@ navigator.geolocation.getCurrentPosition(position => {
         }
     });
 
+
+
    const replaceSubmitButton = () => {
     const submitButton = document.getElementById('submitButton');
     submitButton.replaceWith(submitButton.cloneNode(true)); // Remove old listeners
     }
+
+    // NOTIFICATIONS FOR STAMPS
+    const stampNotif = document.querySelector(".stampNotif");
+    const area = document.querySelector(".area");
+
+  async function receiveStamp(location) {
+    let stampRecieved = false;
+
+        const { data: stampList, error: stampListError } = await supabase
+        .from('posts')
+        .select('stamp')
+
+        console.log("Location:", location);
+        matchList.forEach(({ regex, stamp }) => {
+            if (location.match(regex)) { 
+                if (!stampList.includes(stamp)) {
+                    stampRecieved = stamp;
+                    }
+            }
+        });
+        return stampRecieved;
+    }
+
+    function stampNotify(stamp) {
+        const formattedStamp = stamp.replaceAll("_", " ");
+        let imageLink = `https://esrkdaokgokznnqzgwrg.supabase.co/storage/v1/object/public/stamp-images//${stamp}.PNG`
+        const HTMLString = `
+        <div class="stampNotif">
+            <img src="${imageLink}">
+            <div class="achievement">
+                <h3>New Stamp Unlocked!</h3>
+                <h1>${formattedStamp}</h1>
+                <p> Click <a href="stamps.html">here</a> to view </p>
+            </div>
+        </div>
+        `;
+        area.insertAdjacentHTML('beforeend', HTMLString);
+        setTimeout(() => {
+        area.innerHTML = "";
+        }, 8000)
+    };
 
     let currentPointID;
     async function addPoint(e) {
@@ -441,6 +484,19 @@ navigator.geolocation.getCurrentPosition(position => {
                 if (updateError) {
                     alert("Update error" + updateError.message)
                     return;
+                }
+                let stamp = receiveStamp(location);
+                if (stamp !== false) {
+                    const { data: insertData, error: insertError } = await supabase
+                    .from('posts')
+                    .update({ 
+                        stamp: stamp
+                    })
+                    .eq('post_id', currentPostID);
+                    if (insertError) {
+                        alert("Stamp error", insertError.message);
+                    }
+                    stampNotify(stamp);
                 }
             }
             entry.close();
@@ -577,5 +633,39 @@ navigator.geolocation.getCurrentPosition(position => {
             window.location.href = '../../pages/index.html'
         }
     })
+
+
+    //SEARCH BAR AND OTHER CONTROLS
+
+            const geocoder = new MapboxGeocoder({
+                accessToken: mapboxgl.accessToken,
+                types: 'address,poi',
+                proximity: [-73.99209, 40.68933]
+            });
+            map.addControl(geocoder, 'top-right');
+
+            // Fullscreen and Navigation Controls
+            map.addControl(new mapboxgl.FullscreenControl(), 'bottom-right');
+            map.addControl(new mapboxgl.NavigationControl(), 'bottom-right');
+
+            const zoomButton = document.querySelector('.mapboxgl-ctrl-fullscreen');
+            const searchBar = document.querySelector('.mapboxgl-ctrl-geocoder');
+
+            zoomButton.addEventListener("click", () => {
+                if (!zoomButton.classList.contains("zoomed")) {
+                    zoomButton.classList.add("zoomed");
+                    customization.style.display = "none";
+                    menu.style.display = "none";
+                    customButton.style.display = "none";
+                    searchBar.style.display = "none";
+                } else {
+                    zoomButton.classList.remove("zoomed");
+                    customization.style.display = "flex";
+                    menu.style.display = "flex";
+                    customButton.style.display = "flex";
+                    searchBar.style.display = "block";
+                }
+            });
+
 
 })
