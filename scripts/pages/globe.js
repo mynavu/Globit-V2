@@ -5,6 +5,7 @@ import { totalStamps } from '../utils/totalStamps.js'
 mapboxgl.accessToken = 'pk.eyJ1IjoibXluYXZ1IiwiYSI6ImNtM3NzaWhpejAxM3Qya29tcTltOGhqd2EifQ.NF_TfdXji0T4Mn-qDeyzQw';
 const submitButton = document.getElementById('submitButton');
 const plusButton = document.getElementById('plusButton');
+const text = document.querySelector('.text');
 
 
 
@@ -61,16 +62,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         center: [-90, 40]
     });
 
-    map.on('load', () => {
-        plusButton.style.display = 'flex';
-        
-    });
-    
-    map.on('style.load', () => {
-        plusButton.style.display = 'flex';
-        
-    });
-
     function addPointsLayer(map, geojson) {
         if (!map.getSource('points')) {
             map.addSource('points', {
@@ -79,17 +70,17 @@ document.addEventListener("DOMContentLoaded", async () => {
             });
         }
         if (!map.getLayer('points-layer')) {
-            map.loadImage('./pointer1.png', (error, image) => {
+            map.loadImage('../../assets/default_pointer.png', (error, image) => {
                 if (error) throw error;
-                if (!map.hasImage('custom-pointer')) {
-                    map.addImage('custom-pointer', image);
+                if (!map.hasImage('default-pointer')) {
+                    map.addImage('default-pointer', image);
                 }
                 map.addLayer({
                     id: 'points-layer',
                     type: 'symbol',
                     source: 'points',
                     layout: {
-                        'icon-image': 'custom-pointer',
+                        'icon-image': 'default-pointer',
                         'icon-size': 0.07,
                         'icon-allow-overlap': true,
                         'icon-offset': [0, -280]
@@ -98,6 +89,63 @@ document.addEventListener("DOMContentLoaded", async () => {
             });
         }
     }
+
+    map.on('load', () => {
+        plusButton.style.display = 'flex';
+        addPointsLayer(map, geojson);
+        
+    });
+    
+    map.on('style.load', () => {
+        plusButton.style.display = 'flex';
+        addPointsLayer(map, geojson);
+    });
+
+    let hoverPopup = null;
+    let clickPopup = null;
+
+    // HOVERING A POST
+    map.on('mouseenter', 'points-layer', (e) => {
+        if (!clickPopup && text.style.display !== 'block') {
+        map.getCanvas().style.cursor = 'pointer';
+        const coordinates = e.lngLat;
+        const location = e.features[0]?.properties?.location;
+    
+        hoverPopup = new mapboxgl.Popup({
+                    closeButton: false,
+                    closeOnClick: false
+                })
+                .setLngLat(coordinates)
+                .setHTML(location)
+                .addTo(map);
+        }
+    });
+    map.on('mouseleave', 'points-layer', () => {
+        if (text.style.display !== 'block') {
+        map.getCanvas().style.cursor = '';}
+        if (hoverPopup) {
+            hoverPopup.getElement().style.transition = "opacity 1s ease-out";
+            hoverPopup.getElement().style.opacity = 0;
+            setTimeout(() => {
+                hoverPopup.remove();
+                hoverPopup = null;
+            }, 50);
+        }
+    });
+
+    // ADDING A POST
+    function enablePointAdding() {
+        map.getCanvas().style.cursor = 'pointer';
+        text.style.display = 'block';
+        map.on('click', addPoint);
+    }
+    function disablePointAdding() {
+        map.getCanvas().style.cursor = '';
+        text.style.display = 'none';
+        map.off('click', addPoint);
+    }
+
+
 
 
 
