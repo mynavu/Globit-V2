@@ -81,6 +81,10 @@ body {
     box-shadow: 2px 2px 0 0px black;
 }
 
+.weatherIcon {
+    font-size: 15px;
+}
+
 .numberOfPosts {
     color: #ffffff;
     position: absolute;

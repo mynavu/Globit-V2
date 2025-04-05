@@ -6,8 +6,13 @@ mapboxgl.accessToken = 'pk.eyJ1IjoibXluYXZ1IiwiYSI6ImNtM3NzaWhpejAxM3Qya29tcTltO
 const submitButton = document.getElementById('submitButton');
 const plusButton = document.getElementById('plusButton');
 const text = document.querySelector('.text');
-
-
+const entry = document.getElementById('entry');
+const imageInput = document.getElementById("imageInput");
+const imagePreview = document.getElementById('imagePreview');
+const confirmLocation = document.getElementById('confirmLocation');
+const currentLocationButton = document.getElementById('currentLocationButton');
+const somewhereElseButton = document.getElementById('somewhereElseButton');
+const exitButton2 = document.querySelector('.exit-button2');
 
 document.addEventListener("DOMContentLoaded", async () => {
 
@@ -47,12 +52,41 @@ document.addEventListener("DOMContentLoaded", async () => {
             },
             properties: {
                 description: row.caption,
+                image_url: row.image_url,
                 country: row.country,
-                location: row.location_name
+                location: row.location_name,
+                post_id: row.post_id
             }
         }))
       };
+
+    async function updateMap() {
+        geojson = {
+            "type": "FeatureCollection",
+            "features": listOfPosts.map(row => ({
+                type: 'Feature',
+                geometry: { 
+                    type: 'Point', 
+                    coordinates: [row.longitude, row.latitude] 
+                },
+                properties: {
+                    description: row.caption,
+                    image_url: row.image_url,
+                    country: row.country,
+                    location: row.location_name
+                }
+            }))
+          }; 
+        map.getSource('points').setData(geojson);
+    }
       console.log("geojson",geojson);
+
+      let currentLocation = {
+        "type": "FeatureCollection",
+        "features": [
+        ]
+      };
+
 
     let map = new mapboxgl.Map({
         container: 'map',
@@ -101,6 +135,97 @@ document.addEventListener("DOMContentLoaded", async () => {
         addPointsLayer(map, geojson);
     });
 
+    function addCurrentLocation(map, currentLocation) {
+        if (!map.getSource('currentPoint')) {
+            map.addSource('currentPoint', {
+                type: 'geojson',
+                data: currentLocation
+            });
+        }
+        if (!map.getLayer('current-points-layer')) {
+            map.loadImage('../../assets/realtime_pointer.png', (error, image) => {
+                if (error) throw error;
+                if (!map.hasImage('realtime_pointer')) {
+                    map.addImage('realtime_pointer', image);
+                }
+                map.addLayer({
+                    id: 'current-points-layer',
+                    type: 'symbol',
+                    source: 'currentPoint',
+                    layout: {
+                        'icon-image': 'realtime_pointer',
+                        'icon-size': 0.2,
+                        'icon-allow-overlap': true,
+                        'icon-offset': [25, -185]
+                    }
+                });
+            });
+        }
+    }
+
+    const weatherDisplay = document.querySelector('.weatherDisplay');
+    const weatherIcon = {
+        "01d" : '<i class="weatherIcon bi bi-brightness-high-fill"></i>',
+        "02d" : '<i class="weatherIcon bi bi-cloud-sun-fill"></i>',
+        "03d" : '<i class="weatherIcon bi bi-cloud-fill"></i>',
+        "04d" : '<i class="weatherIcon bi bi-clouds-fill"></i>',
+        "09d" : '<i class="weatherIcon bi bi-cloud-drizzle-fill"></i>',
+        "10d" : '<i class="weatherIcon bi bi-cloud-rain-heavy-fill"></i>',
+        "11d" : '<i class="weatherIcon bi bi-cloud-lightning-fill"></i>',
+        "13d" : '<i class="weatherIcon bi bi-cloud-snow-fill"></i>',
+        "50d" : '<i class="weatherIcon bi bi-cloud-haze2-fill"></i>',
+        "01n" : '<i class="weatherIcon bi bi-moon-fill"></i>',
+        "02n" : '<i class="weatherIcon bi bi-cloud-moon-fill"></i>',
+        "03n" : '<i class="weatherIcon bi bi-cloud-fill"></i>',
+        "04n" : '<i class="weatherIcon bi bi-clouds-fill"></i>',
+        "09n" : '<i class="weatherIcon bi bi-cloud-drizzle-fill"></i>',
+        "10n" : '<i class="weatherIcon bi bi-cloud-rain-heavy-fill"></i>',
+        "11n" : '<i class="weatherIcon bi bi-cloud-lightning-fill"></i>',
+        "13n" : '<i class="weatherIcon bi bi-cloud-snow-fill"></i>',
+        "50n" : '<i class="weatherIcon bi bi-cloud-haze2-fill"></i>'
+    };
+
+let locationAccess = false;
+
+navigator.geolocation.getCurrentPosition(position => {
+    const { latitude, longitude } = position.coords;
+    map.flyTo({
+        center: [longitude, latitude],
+        zoom: 3,
+        speed: 0.8
+    });
+    locationAccess = true;
+
+    const point = {
+                   "type": "Feature",
+                   "geometry": {
+                       "type": "Point",
+                       "coordinates": [longitude, latitude]
+                       }
+                   };
+    if (currentLocation.features.length === 0) {
+   currentLocation.features.push(point);
+   };
+
+   if (currentLocation.features.length > 0) {
+       if (map.isStyleLoaded()) {
+              addCurrentLocation(map, currentLocation);
+              const weather = `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=71eda31f2208ffe09fa48962d3a84835`;
+              fetch(weather)
+              .then(response => response.json())
+              .then(data => {
+                console.log(data.weather, data.main);
+                const tempInCelsius = Math.floor(parseFloat(data.main.temp) - 273.15).toString();
+                const iconName = data.weather[0].icon;
+                weatherDisplay.innerHTML = `${weatherIcon[iconName]} &nbsp ${tempInCelsius}°`;
+                weatherDisplay.style.display = "block";
+
+              })
+              .catch(error => console.log("error"));
+       }
+   }
+});
+
     let hoverPopup = null;
     let clickPopup = null;
 
@@ -145,6 +270,253 @@ document.addEventListener("DOMContentLoaded", async () => {
         map.off('click', addPoint);
     }
 
+    async function deletePoint(post_id) {
+        const response = await supabase
+        .from('posts')
+        .delete()
+        .eq('post_id', post_id)
+        updateMap();
+    }
+
+    const clearPreviousEntry = () => {
+        imagePreview.src = '';
+        imagePreview.style.display = 'none';
+        imageInput.value = '';
+   }
+
+   imageInput.addEventListener('change', function (event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = function (e) {
+            imagePreview.src = e.target.result;
+            imagePreview.style.display = 'block';
+            };
+        }
+    });
+
+   const replaceSubmitButton = () => {
+    const submitButton = document.getElementById('submitButton');
+    submitButton.replaceWith(submitButton.cloneNode(true)); // Remove old listeners
+    }
+
+    let currentPointID;
+    async function addPoint(e) {
+        const uploadButton = document.getElementById("uploadButton");
+        let description = "";
+        let location;
+        let countryName;
+        let indexLocation;
+        disablePointAdding();
+        const coordinates = e.lngLat;
+        const { lng, lat } = e.lngLat;
+        const reverseGeoCode = `https://api.mapbox.com/search/geocode/v6/reverse?longitude=${lng}&latitude=${lat}&language=en&access_token=${mapboxgl.accessToken}`;
+        try {
+            const response = await fetch(reverseGeoCode);
+            const data = await response.json();
+            const lastIndex = data.features.length - 1;
+            const oddOrEven = data.features.length % 2;
+
+            if (oddOrEven === 0) {
+                indexLocation = (data.features.length / 2) - 1;
+            } else {
+                indexLocation = ((data.features.length + 1) / 2) - 1;
+                if (indexLocation === -1) {
+                    indexLocation = 0;
+                }
+            }
+            location = data.features[indexLocation].properties.full_address;
+            countryName = data.features[indexLocation].properties.context.country.name;
+        } catch (error) {
+            console.log('Error fetching or processing geocoding data');
+            location = "Unknown Location";
+            countryName = "Unknown Country";
+        }
+        const { data: insertData, error: insertError } = await supabase
+        .from('posts')
+        .insert({ 
+            image_url: "", 
+            caption: "", 
+            location_name: location, 
+            longitude: lng, 
+            latitude: lat, 
+            country: countryName, 
+            user_id: userID 
+        })
+        .select('post_id')
+        .single();
+        let currentPostID = insertData.user_id;
+        currentPointID = currentPostID;
+
+        updateMap();
+        entry.showModal();
+        exitButton.style.display = 'block';
+        replaceSubmitButton();
+        const newSubmitButton = document.getElementById('submitButton');
+        newSubmitButton.innerText = 'Post';
+        clearPreviousEntry();
+
+        newSubmitButton.addEventListener("click", async () => {
+            const file = imageInput.files[0];
+            if (!file) {
+                alert("Upload an image to post");
+                return;
+            }
+            if (file) {    
+                description = document.querySelector('input[name="description"]').value;
+                const filePath = `user_${userData.id}/${Date.now()}_${file.name}`;
+                const { data: imageData, error: imageError } = await supabase
+                .storage
+                .from('posts-images')
+                .upload(filePath, file, {
+                    cacheControl: '3600',
+                    upsert: false
+                });
+                if (imageError) {
+                    alert("Image error" + imageError.message)
+                    return;
+                }
+                alert("Image uploaded successfully");
+                
+                const { data: urlData } = await supabase
+                .storage
+                .from('posts-images')
+                .getPublicUrl(filePath);
+
+                const { error } = await supabase
+                .from('posts')
+                .update({ 
+                    image_url: urlData, 
+                    caption: description  
+                })
+                .eq('post_id', currentPostID)
+            }
+            entry.close();
+            clearPreviousEntry();
+            updateMap();
+            plusButton.style.display = 'block';
+        })
+    }
+
+    async function deletePoint(index) {
+        const response = await supabase
+        .from('posts')
+        .delete()
+        .eq('post_id', index);
+        updateMap();
+    }
+
+    //CLICKING A POPUP
+    map.on('click', 'points-layer', function(e) {
+        if (text.style.display !== 'block') {
+            const coordinates = e.lngLat;
+            const feature = e.features[0];
+            const currentImage = feature.properties.image_url;
+            const location = feature.properties.location;
+            const description = feature.properties.description || "No description";
+            const post_id = feature.properties.post_id;
+
+            console.log("e", e);
+            console.log('Feature:', feature);
+            console.log("e.features", e.features);
+
+            if (currentImage) {
+                console.log(`Image URL: ${currentImage}`);
+                image = `<img src="${currentImage}" style="width: 200px; display: block; " />`;
+                        if (clickPopup) {
+                            clickPopup.remove();
+                        }
+                        clickPopup = new mapboxgl.Popup()
+                            .setLngLat(coordinates)
+                            .setHTML(`
+                                <div class="popup">
+                                    <p class="location_description margin">📍<i>${location}</i></p>
+                                    ${image}
+                                    <p class="location_description">${description}</p>
+                                    <div class="container-delete">
+                                        <button id="delete-btn-${post_id}" class="delete-btn">Delete <i class="bi bi-trash-fill"></i> </button>
+                                    </div>
+                                </div>
+                            `)
+                            .addTo(map);
+                        // Listeners for the buttons
+                        setTimeout(() => {
+                            // Ensure the DOM has rendered before adding listeners
+                            document.getElementById(`delete-btn-${post_id}`).addEventListener('click', () => {
+                                deletePoint(post_id);
+                                clickPopup.remove();
+                            });
+                        }, 100); // Short delay to ensure DOM availability
+                        clickPopup.on('close', () => {
+                                clickPopup = null; // Cleanup the reference
+                            });
+            } else {
+                console.warn(`No image found`);
+            }
+        }
+    });
+
+    const confirmCloseButton = document.getElementById('confirmCloseButton')
+    const exitButton = document.querySelector('.exit-button');
+    const cancelButton = document.getElementById('cancelButton');
+    const discardButton = document.getElementById('discardButton');
+
+    exitButton.addEventListener('click', () => {
+        confirmCloseButton.showModal();
+    });
+
+    cancelButton.addEventListener('click', () => {
+        confirmCloseButton.close();
+    })
+
+    discardButton.addEventListener('click', () => {
+        confirmCloseButton.close();
+        clearPreviousEntry();
+        entry.close();
+        customButton.style.display = 'block';
+        deletePoint(currentPointID);
+        updateMap();
+    })
+
+    let currentLocationListenerAdded = false;
+    plusButton.addEventListener('click', function () {
+        plusButton.style.display = 'none';
+        confirmLocation.showModal();
+        if (!currentLocationListenerAdded) {
+            currentLocationButton.addEventListener('click', () => {
+                if (locationAccess) {
+                    confirmLocation.close();
+                    plusButton.style.display = "block";
+                    const currentCoords = currentLocation.features[0].geometry.coordinates;
+                    const simulatedEvent = {
+                        lngLat: {
+                            lng: currentCoords[0],
+                            lat: currentCoords[1]
+                        },
+                        point: null,
+                        originalEvent: null,
+                        type: "geolocate",
+                        target: map,
+                        _defaultPrevented: false
+                    };
+                    addPoint(simulatedEvent);
+                } else {
+                alert("Please enable location services in your browser settings to use this feature. Refresh the page once enabled.");
+                plusButton.style.display = "block";
+                };
+            });
+            currentLocationListenerAdded = true;
+        }
+        somewhereElseButton.addEventListener('click', () => {
+            enablePointAdding();
+        });
+        exitButton2.addEventListener('click', (e) => {
+            e.preventDefault();
+            confirmLocation.close();
+            plusButton.style.display = "block";
+        });
+    });
 
 
 
@@ -160,69 +532,4 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     })
 
-    const imageInput = document.getElementById("imageInput");
-    const uploadButton = document.getElementById("uploadButton");
-    uploadButton.addEventListener("click", async () => {
-        const file = imageInput.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = (e) => {
-                const imageBlob = e.target.result;
-                const preview = document.createElement("img");
-                preview.src = imageBlob;
-                preview.style.width = "100px";
-                preview.style.height = "auto";
-                document.body.appendChild(preview);
-            }
-
-            const filePath = `user_${userData.id}/${Date.now()}_${file.name}`
-            console.log(filePath);
-            const { data: imageData, error: imageError } = await supabase
-            .storage
-            .from('posts-images')
-            .upload(filePath, file, {
-                cacheControl: '3600',
-                upsert: false
-            });
-            if (imageError) {
-                alert("Image error" + imageError.message)
-                return;
-            }
-            alert("Image uploaded successfully");
-            
-        }
-
-    })
-
-    const retrieveButton = document.getElementById("retrieveButton");
-        retrieveButton.addEventListener("click", async () => {
-            console.log("Clicked!")
-            const { data: retrieveData, error } = await supabase
-            .storage
-            .from('posts-images')
-            .list(`user_${userData.id}`);
-            
-            if (error) {
-                console.error("Error retrieving images:", error.message);
-                return;
-            }
-
-            console.log(retrieveData);
-
-
-            for (const file of retrieveData) {
-                console.log(file);
-                const retrieveImage = document.createElement("img");
-                retrieveImage.src = await supabase
-                .storage
-                .from('posts-images')
-                .getPublicUrl(`user_${userData.id}/${file.name}`).data.publicUrl;
-                retrieveImage.style.width = "150px";
-                retrieveImage.style.width = "auto";
-                document.body.appendChild(retrieveImage);
-                console.log("1:",retrieveData.publicUrl, "2:",retrieveData, "3:",retrieveImage.src);
-            };
-
-        });
 })
