@@ -5,6 +5,9 @@ body {
     overflow: hidden;
   }
 
+p {
+    font-size: 10px;
+}
 
   #map {
     top: 0px;
@@ -85,24 +88,6 @@ body {
     font-size: 15px;
 }
 
-.numberOfPosts {
-    color: #ffffff;
-    position: absolute;
-    right: 100px;
-    bottom: 20px;
-    z-index: 3;
-    display: none;
-  }
-  
-  .numberOfCountries {
-    color: #ffffff;
-    position: absolute;
-    right: 100px;
-    bottom: 50px;
-    z-index: 3;
-    display: none;
-  }
-
   .text {
     font-family: "Noto Sans Display", sans-serif;
     display: none;
@@ -111,9 +96,24 @@ body {
     left: 30px;
     color: var(--orange);
     text-shadow: 0 0 10px #ffffff, 0 0 20px #ffffff, 0 0 30px #ffffff;
-    opacity: 0; /* Start hidden */
+    opacity: 0;
     animation: fadeInOut 2s ease-in-out infinite;
     z-index: 3;
+  }
+
+  @keyframes fadeInOut {
+    0% {
+      opacity: 0;
+      text-shadow: 0 0 5px #ffffff;
+    }
+    50% {
+      opacity: 1;
+      text-shadow: 0 0 20px #ffffff, 0 0 30px #ffffff;
+    }
+    100% {
+      opacity: 0;
+      text-shadow: 0 0 5px #ffffff;
+    }
   }
 
   #confirmCloseButton {
@@ -178,6 +178,17 @@ body {
     border-color: black;
     box-shadow: 5px 5px 0 0px black;
     box-sizing: content-box;
+  }
+
+  .exit-button {
+    position: absolute;
+    color: black;
+    top: 2px;
+    right: 5px;
+    background: transparent;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
   }
 
   .exit-button2 {
@@ -296,5 +307,53 @@ body {
   }
   
   #submitButton:hover {
+    cursor: pointer;
+  }
+
+  .mapboxgl-popup-content {
+    background-color: white !important;
+    border: 2px solid black !important;
+    border-radius: 20px !important;
+    text-align: center !important;
+    font-weight: 600;
+    box-shadow: 5px 5px 0 0px black;
+  }
+  
+  .mapboxgl-popup-tip {
+    display: none;
+  }
+  
+  .mapboxgl-popup-close-button {
+    color: #000 !important;
+    margin-right: 3px;
+    margin-top: 3px;
+    font-size: 16px !important;
+    font-weight: bold !important;
+  }
+  
+  .location_description {
+    text-align: left;
+    width: 200px;
+  }
+
+  .margin {
+    margin-top: 15px;
+  }
+
+  .container-delete {
+    display: inline-block;
+  }
+
+  .delete-btn {
+    background: var(--orange);
+    color: white;
+    width: 80px;
+    padding: 6px;
+    border-radius: 20px;
+    margin-top: 0px;
+    margin-left: 5px;
+    margin-right: 10px;
+    border: black solid 2px;
+    display: inline-flex;
     cursor: pointer;
   }

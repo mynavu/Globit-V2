@@ -36,7 +36,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     const {data: listOfPosts, error: listOfPostsErrors } = await supabase
     .from('posts')
     .select()
-    .eq('user_id', userID);
+    .eq('user_id', userID)
+    .neq('image_url', "");
     if (listOfPostsErrors) {
         console.log("error",listOfPostsErrors.message);
     }
@@ -346,8 +347,9 @@ navigator.geolocation.getCurrentPosition(position => {
         })
         .select('post_id')
         .single();
-        let currentPostID = insertData.user_id;
+        let currentPostID = insertData.post_id;
         currentPointID = currentPostID;
+        console.log("currentPostID",currentPostID)
 
         updateMap();
         entry.showModal();
@@ -379,18 +381,29 @@ navigator.geolocation.getCurrentPosition(position => {
                 }
                 alert("Image uploaded successfully");
                 
-                const { data: urlData } = await supabase
+                const { data: urlData, error: urlError } = await supabase
                 .storage
                 .from('posts-images')
                 .getPublicUrl(filePath);
 
-                const { error } = await supabase
+                if (urlError) {
+                    alert("URL error" + urlError.message)
+                    return;
+                }
+
+                const { error: updateError } = await supabase
                 .from('posts')
                 .update({ 
-                    image_url: urlData, 
+                    image_url: urlData.publicUrl, 
                     caption: description  
                 })
                 .eq('post_id', currentPostID)
+
+                if (updateError) {
+                    alert("Update error" + updateError.message)
+                    return;
+                }
+
             }
             entry.close();
             clearPreviousEntry();
@@ -423,7 +436,7 @@ navigator.geolocation.getCurrentPosition(position => {
 
             if (currentImage) {
                 console.log(`Image URL: ${currentImage}`);
-                image = `<img src="${currentImage}" style="width: 200px; display: block; " />`;
+                const image = `<img src="${currentImage}" style="width: 200px; display: block; " />`;
                         if (clickPopup) {
                             clickPopup.remove();
                         }
