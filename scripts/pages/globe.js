@@ -33,7 +33,13 @@ document.addEventListener("DOMContentLoaded", async () => {
     console.log(userData);
     const userID = userData.id;
 
-    const {data: listOfPosts, error: listOfPostsErrors } = await supabase
+    // DELETE ALL ROWS WITH NO IMAGE URL
+    const response = await supabase
+    .from('posts')
+    .delete()
+    .eq('image_url', "");
+
+    let {data: listOfPosts, error: listOfPostsErrors } = await supabase
     .from('posts')
     .select()
     .eq('user_id', userID)
@@ -62,6 +68,15 @@ document.addEventListener("DOMContentLoaded", async () => {
       };
 
     async function updateMap() {
+        let {data: listOfPosts, error: listOfPostsErrors } = await supabase
+        .from('posts')
+        .select()
+        .eq('user_id', userID)
+        .neq('image_url', "");
+        if (listOfPostsErrors) {
+            console.log("error",listOfPostsErrors.message);
+        }
+        
         geojson = {
             "type": "FeatureCollection",
             "features": listOfPosts.map(row => ({
@@ -74,15 +89,17 @@ document.addEventListener("DOMContentLoaded", async () => {
                     description: row.caption,
                     image_url: row.image_url,
                     country: row.country,
-                    location: row.location_name
+                    location: row.location_name,
+                    post_id: row.post_id
                 }
             }))
           }; 
         map.getSource('points').setData(geojson);
+        console.log(geojson);
     }
       console.log("geojson",geojson);
 
-      let currentLocation = {
+    let currentLocation = {
         "type": "FeatureCollection",
         "features": [
         ]
@@ -272,6 +289,27 @@ navigator.geolocation.getCurrentPosition(position => {
     }
 
     async function deletePoint(post_id) {
+        const { data: urlData, error: urlError} = await supabase
+        .from('posts')
+        .select()
+        .eq('post_id', post_id)
+        .single();
+        console.log("urlData", urlData);
+        let imagePath = urlData.image_url.split('/posts-images/')[1];
+        console.log("imagePath", imagePath);
+        if (urlError) {
+            alert("urlError", urlError);
+        }
+
+        const { data, error } = await supabase
+        .storage
+        .from('posts-images')
+        .remove([imagePath])
+        if (error) {
+            alert("Error in deleting image in bucket:", error.message);
+        }
+        console.log("deleted")
+
         const response = await supabase
         .from('posts')
         .delete()
@@ -280,6 +318,7 @@ navigator.geolocation.getCurrentPosition(position => {
     }
 
     const clearPreviousEntry = () => {
+        document.querySelector('input[name="description"]').value = '';
         imagePreview.src = '';
         imagePreview.style.display = 'none';
         imageInput.value = '';
@@ -403,7 +442,6 @@ navigator.geolocation.getCurrentPosition(position => {
                     alert("Update error" + updateError.message)
                     return;
                 }
-
             }
             entry.close();
             clearPreviousEntry();
@@ -412,13 +450,6 @@ navigator.geolocation.getCurrentPosition(position => {
         })
     }
 
-    async function deletePoint(index) {
-        const response = await supabase
-        .from('posts')
-        .delete()
-        .eq('post_id', index);
-        updateMap();
-    }
 
     //CLICKING A POPUP
     map.on('click', 'points-layer', function(e) {
@@ -433,6 +464,7 @@ navigator.geolocation.getCurrentPosition(position => {
             console.log("e", e);
             console.log('Feature:', feature);
             console.log("e.features", e.features);
+            console.log("post_id",post_id);
 
             if (currentImage) {
                 console.log(`Image URL: ${currentImage}`);
@@ -457,12 +489,13 @@ navigator.geolocation.getCurrentPosition(position => {
                         setTimeout(() => {
                             // Ensure the DOM has rendered before adding listeners
                             document.getElementById(`delete-btn-${post_id}`).addEventListener('click', () => {
+                                console.log("Deleting ID:", post_id);
                                 deletePoint(post_id);
                                 clickPopup.remove();
                             });
-                        }, 100); // Short delay to ensure DOM availability
+                        }, 100);
                         clickPopup.on('close', () => {
-                                clickPopup = null; // Cleanup the reference
+                                clickPopup = null;
                             });
             } else {
                 console.warn(`No image found`);
@@ -487,7 +520,7 @@ navigator.geolocation.getCurrentPosition(position => {
         confirmCloseButton.close();
         clearPreviousEntry();
         entry.close();
-        customButton.style.display = 'block';
+        plusButton.style.display = 'block';
         deletePoint(currentPointID);
         updateMap();
     })
