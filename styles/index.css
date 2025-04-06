@@ -1,3 +1,17 @@
+:root {
+  --orange: #ff7825;
+  --green: #9bff38;
+  --dark-green: #00bf63;
+  --yellow: #fffc00;
+  --blue: #6bd8ff;
+  --dark-blue: #001f61;
+  --red: #fa4e1d;
+  --white: #ffffff;
+  --light-orange: #ffad7a;
+  --pink: #ff79a5;
+  --mid-orange: #ff904c;
+}
+
 body {
     margin: 0;
     padding: 0;

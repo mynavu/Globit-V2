@@ -16,6 +16,10 @@
     box-sizing: border-box;
     font-family: "Noto Sans Display", sans-serif !important;
   }
+
+  body::-webkit-scrollbar {
+    display: none;
+  }
   
   a {
     text-decoration: none;
@@ -152,6 +156,14 @@
     justify-content: space-around;
   }
 
+  header.fixed {
+    position: fixed;
+  }
+
+  .fixed {
+    position: fixed;
+  }
+
   .mode {
     font-weight: 650;
     color: black;
@@ -261,4 +273,35 @@
     position: relative;
     cursor: pointer;
   }
+
+  .average {
+    font-weight: 600;
+  }
   
+  .thick {
+    font-weight: 800;
+  }
+  
+  .margin-btm {
+    margin-bottom: 0px;
+  }
+
+  .small-margin-top {
+    margin-top: 12px;
+  }
+
+  .same-line {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 20px;
+  }
+
+  .small-margin {
+    margin-top: 10px;
+    margin-bottom: 0px;
+  }
+
+  .thick {
+    font-weight: 800;
+  }

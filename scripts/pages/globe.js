@@ -353,12 +353,15 @@ navigator.geolocation.getCurrentPosition(position => {
         const { data: stampList, error: stampListError } = await supabase
         .from('posts')
         .select('stamp')
+        .eq('user_id', userID)
 
         console.log("Location:", location);
         matchList.forEach(({ regex, stamp }) => {
             if (location.match(regex)) { 
                 if (!stampList.includes(stamp)) {
                     stampRecieved = stamp;
+                    console.log("stamps recieved:", stampRecieved);
+                    return stampRecieved;
                     }
             }
         });
@@ -367,6 +370,7 @@ navigator.geolocation.getCurrentPosition(position => {
 
     function stampNotify(stamp) {
         const formattedStamp = stamp.replaceAll("_", " ");
+        console.log("formattedStamp",formattedStamp);
         let imageLink = `https://esrkdaokgokznnqzgwrg.supabase.co/storage/v1/object/public/stamp-images//${stamp}.PNG`
         const HTMLString = `
         <div class="stampNotif">
@@ -485,8 +489,10 @@ navigator.geolocation.getCurrentPosition(position => {
                     alert("Update error" + updateError.message)
                     return;
                 }
-                let stamp = receiveStamp(location);
+                let stamp = await receiveStamp(location);
+                console.log("Is this an error:", stamp);
                 if (stamp !== false) {
+                    console.log("New stamp", stamp);
                     const { data: insertData, error: insertError } = await supabase
                     .from('posts')
                     .update({ 
@@ -506,6 +512,47 @@ navigator.geolocation.getCurrentPosition(position => {
         })
     }
 
+    //PRELOAD IMAGES
+    function preloadStamps(list) {
+        const promises = list.map(({ stamp }) => {
+            return new Promise((resolve, reject) => {
+                const img = new Image();
+                const preloadLink = `https://esrkdaokgokznnqzgwrg.supabase.co/storage/v1/object/public/stamp-images/${stamp}.PNG`;
+                img.src = preloadLink;
+                img.onload = () => resolve(preloadLink);
+                img.onerror = () => reject(new Error(`Failed to load image: ${preloadLink}`));
+            });
+        });
+        return Promise.all(promises);
+    }
+
+    async function preloadUserImages() {
+        const { data, error } = await supabase
+        .from('posts')
+        .select('image_url')
+        .eq('user_id', userID)
+        console.log("data", data);
+
+        const promises = data.map(url => {
+            return new Promise((resolve, reject) => {
+                const img = new Image();
+                img.src = url.image_url;
+                img.onload = () => resolve(url.image_url);
+                img.onerror = () => reject(new Error(`Failed to load image: ${url}`));
+            });
+        });
+        return Promise.all(promises);
+    }
+
+    try {
+        await preloadStamps(matchList);
+        await preloadUserImages();
+        console.log("All images preloaded successfully");
+    } catch (error) {
+        console.error("Error preloading images:", error.message);
+    }
+
+    
 
     //CLICKING A POPUP
     map.on('click', 'points-layer', function(e) {
