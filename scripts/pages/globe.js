@@ -14,6 +14,7 @@ const currentLocationButton = document.getElementById('currentLocationButton');
 const somewhereElseButton = document.getElementById('somewhereElseButton');
 const exitButton2 = document.querySelector('.exit-button2');
 
+
 document.addEventListener("DOMContentLoaded", async () => {
 
     const { data: { session }, error } = await supabase.auth.getSession();
@@ -32,6 +33,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     console.log(`Welcome user: ${JSON.stringify(userData.username)}`)
     console.log(userData);
     const userID = userData.id;
+
+    const usernameDisplay = document.getElementById('username');
+    usernameDisplay.innerText = `@${userData.username}`;
+
+
 
     // DELETE ALL ROWS WITH NO IMAGE URL
     const response = await supabase
@@ -300,15 +306,16 @@ navigator.geolocation.getCurrentPosition(position => {
         if (urlError) {
             alert("urlError", urlError);
         }
-
-        const { data, error } = await supabase
-        .storage
-        .from('posts-images')
-        .remove([imagePath])
-        if (error) {
-            alert("Error in deleting image in bucket:", error.message);
+        if (imagePath !== null) {
+            const { data, error } = await supabase
+            .storage
+            .from('posts-images')
+            .remove([imagePath])
+            if (error) {
+                alert("Error in deleting image in bucket:", error.message);
+            }
+            console.log("deleted")
         }
-        console.log("deleted")
 
         const response = await supabase
         .from('posts')
@@ -418,7 +425,7 @@ navigator.geolocation.getCurrentPosition(position => {
         } catch (error) {
             console.log('Error fetching or processing geocoding data');
             location = "Unknown Location";
-            countryName = "Unknown Country";
+            countryName = null;
         }
         const { data: insertData, error: insertError } = await supabase
         .from('posts')
@@ -437,7 +444,6 @@ navigator.geolocation.getCurrentPosition(position => {
         currentPointID = currentPostID;
         console.log("currentPostID",currentPostID)
 
-        updateMap();
         entry.showModal();
         exitButton.style.display = 'block';
         replaceSubmitButton();
@@ -465,7 +471,6 @@ navigator.geolocation.getCurrentPosition(position => {
                     alert("Image error" + imageError.message)
                     return;
                 }
-                alert("Image uploaded successfully");
                 
                 const { data: urlData, error: urlError } = await supabase
                 .storage
@@ -490,7 +495,6 @@ navigator.geolocation.getCurrentPosition(position => {
                     return;
                 }
                 let stamp = await receiveStamp(location);
-                console.log("Is this an error:", stamp);
                 if (stamp !== false) {
                     console.log("New stamp", stamp);
                     const { data: insertData, error: insertError } = await supabase
@@ -625,7 +629,6 @@ navigator.geolocation.getCurrentPosition(position => {
         entry.close();
         plusButton.style.display = 'block';
         deletePoint(currentPointID);
-        updateMap();
     })
 
     let currentLocationListenerAdded = false;
@@ -676,7 +679,6 @@ navigator.geolocation.getCurrentPosition(position => {
         if (logOutError) {
             alert("Theres an error: ", logOutError.message);
         } else {
-            alert("Logout successfully!");
             window.location.href = '../../pages/index.html'
         }
     })
@@ -697,22 +699,124 @@ navigator.geolocation.getCurrentPosition(position => {
 
             const zoomButton = document.querySelector('.mapboxgl-ctrl-fullscreen');
             const searchBar = document.querySelector('.mapboxgl-ctrl-geocoder');
+            const menu = document.querySelector('.menu');
 
             zoomButton.addEventListener("click", () => {
                 if (!zoomButton.classList.contains("zoomed")) {
                     zoomButton.classList.add("zoomed");
                     customization.style.display = "none";
                     menu.style.display = "none";
-                    customButton.style.display = "none";
+                    plusButton.style.display = "none";
                     searchBar.style.display = "none";
                 } else {
                     zoomButton.classList.remove("zoomed");
                     customization.style.display = "flex";
                     menu.style.display = "flex";
-                    customButton.style.display = "flex";
+                    plusButton.style.display = "flex";
                     searchBar.style.display = "block";
                 }
             });
 
+            // SETTINGS
+            const settingsButton = document.querySelector('.menuSettings');
+            const customization = document.querySelector('.customization');
+            const mode = document.querySelector(".mode");
+            const modeButton = document.getElementById('check');
+            const spinStyle = document.querySelector(".modeButton1");
+            
+            settingsButton.addEventListener("click", () => {
+                customization.style.display = (customization.style.display === "none" || customization.style.display === "") ? "flex" : "none";
+            })
+
+            const savedState = localStorage.getItem('checkboxState');
+
+            function darkMode() {
+                console.log("Dark Mode");
+                localStorage.setItem('checkboxState', JSON.stringify(modeButton.checked));
+                map.setStyle('mapbox://styles/mynavu/cm4b3wrge01bm01si09uyal4o');
+                map.on('style.load', () => {
+                mode.innerText = "Mode: Dark";
+                spinStyle.style.backgroundColor = "#001f61";
+                spinStyle.style.setProperty('--before-background-color', 'white');
+                spinStyle.style.setProperty('--before-box-shadow', '0 0 10px white');
+                });
+        }
+        
+        function lightMode() {
+                console.log("Light Mode");
+                localStorage.setItem('checkboxState', JSON.stringify(modeButton.checked));
+                map.setStyle('mapbox://styles/mynavu/cm3std23v009l01sd8csudg7h'); // Light mode style
+                map.on('style.load', () => {
+                mode.innerText = "Mode: Light";
+                spinStyle.style.backgroundColor = "#6bd8ff";
+                spinStyle.style.setProperty('--before-background-color', '#fffc00');
+                spinStyle.style.setProperty('--before-box-shadow', '0 0 10px #fffc00');
+                });
+              
+        }
+
+        if (savedState !== null) {
+            modeButton.checked = JSON.parse(savedState);
+          };
+          modeButton.checked ? darkMode() : lightMode();
+          console.log("modeButton.checked", modeButton.checked);
+      
+      modeButton.addEventListener('change', () => {
+          modeButton.checked ? darkMode() : lightMode();
+          console.log("on change modeButton.checked", modeButton.checked);
+      });
+
+
+      // SPINNING
+const secondsPerRevolution = 120;
+const maxSpinZoom = 5;
+const slowSpinZoom = 3;
+let userInteracting = false;
+let spinEnabled = false;
+
+function spinGlobe() {
+    const zoom = map.getZoom();
+    if (spinEnabled && !userInteracting && zoom < maxSpinZoom) {
+        let distancePerSecond = 360 / secondsPerRevolution;
+        if (zoom > slowSpinZoom) {
+            const zoomDif = (maxSpinZoom - zoom) / (maxSpinZoom - slowSpinZoom);
+                            distancePerSecond *= zoomDif;
+
+        }
+        const center = map.getCenter();
+        center.lng -= distancePerSecond;
+        map.easeTo({ center, duration: 1000, easing: (n) => n });
+    }
+}
+
+map.on('mousedown',() => {
+    userInteracting = true;
+});
+
+const events = ['mouseup', 'dragend', 'pitchend', 'rotateend'];
+events.forEach((event) => {
+    map.on(event, () => {
+        userInteracting = false;
+        spinGlobe();
+    })
+})
+  // When animation is complete, spin again
+map.on('moveend', () => {
+    spinGlobe();
+});
+
+const spinButton = document.getElementById('check1');
+const spinText = document.querySelector('.spin')
+
+spinButton.addEventListener('change', () => {
+    spinEnabled = spinButton.checked;
+    if (spinButton.checked) {
+        spinGlobe();
+        spinText.innerText = 'Spinning: On';
+    } else {
+        map.stop();
+        spinText.innerText = 'Spinning: Off';
+    }
+})
 
 })

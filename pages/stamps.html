@@ -21,12 +21,24 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200">
   </head>
   <body>
-    <header class="header">
+    <div class="background"></div>
+    <header class="fixed">
         <img class="globit_logo" src="../assets/globit_logo.png">
         <div class="logOut">
+            <h5 id="username"></h5>
           <button id="logOutButton">Log Out</button>
         </div>
     </header>
+    <div class="area"></div>
+    <div class="customization">
+        <div class="flex1">
+            <h3 class="mode">Mode: Light</h3>
+            <div class="container">
+                <input type="checkbox" id="check">
+                <label for="check" class="modeButton"></label>
+            </div>
+        </div>
+    </div>
     <div class="menu">
       <a href="globe.html">
           <div class="menuGlobe">
@@ -72,7 +84,47 @@
           </div>
       </div>
   </div>
-    <h2>Stamps</h2>
+  <div class="grid">
+    <div class="leftbar"></div>
+    <div class="mainbar">
+        <div class="stampsCollection">
+            <h1 class="margin-btm">Stamps Collection</h1>
+            <h4 class="average credits"> Artworks by <i> <a href="https://themakers.company/"> The Makers Co. </a> </i> from the Town Squares Collection </h4>
+            <h4 class="average stampsReminder"> You currently have no stamps. Stamps are located in famous places worldwide, usually in cities, but they can also be regions or islands.
+                To earn a stamp, post a picture whenever you visit a place with cultural significance, you might earn a stamp.
+            </h4>
+            <div class="allStamps">
+            </div>
+        </div>
+        <div class="countriesCollection">
+            <h1 class="margin-btm">Countries Visited</h1>
+            <h4 class="average countryFraction"><i><span class="countriesNumber">0</span>/195</i></h4>
+            <h4 class="average countriesReminder"> You have not visited any countries. To add to your country list, take a picture in your own country or the next time you travel abroad! </h4>
+            <div class="allCountries">
+            </div>
+        </div>
+    </div>
+    <div class="rightbar">
+        <div class="fixed">
+            <div class="recap">
+                <h1 class="margin-btm small-margin-top">Recap</h1>
+                <div class="same-line">
+                    <h4 class="margin-btm small-margin thick">Posts:&nbsp;<span class="average postsNumber">...</span> </h4>
+                    <h4 class="margin-btm small-margin thick">Stamps:&nbsp;<span class="average stampsNumber">...</span></h4>
+                </div>
+                <h4 class="margin-btm small-margin thick mostPostedCountryStatement"> Most Posted Country:&nbsp;<span class="average mostPostedCountry"> Loading... </span></h4>
+                <img class="margin-top average mostPostedCountryImg" src="">
+                <h4 class="margin-btm small-margin average mostPostedCountryData"></h4>
+            </div>
+            <div class="suggestion">
+                <h1 class="margin-btm small-margin-top"> Suggestion </h1>
+                <h4 class="margin-btm small-margin average suggestionStatement"> Visit <span class="city"></span> in <span class="country"></span> to earn a <span class="city"></span> stamp! </h4>
+                <img class="margin-top suggestionImg" src="">
+            </div>
+        </div>
+
+    </div>
+</div>
     
     <script src="../scripts/pages/stamps.js" type="module"></script>
   </body>

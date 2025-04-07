@@ -80,11 +80,6 @@ body {
     cursor: pointer;
   }
 
-  .grid, .grid2 {
-    display: grid;
-    grid-template-columns: 13% 60% 27%;
-  }
-
   .leftbar2 {
     height: auto;
     grid-column: 1;
@@ -133,6 +128,7 @@ body {
     padding-right: 40px;
     display: none;
   }
+
 
   .postReminder h4 {
     text-align: center;
@@ -223,6 +219,7 @@ body {
     width: 100%;
     padding-left: 30px;
     padding-right: 30px;
+    margin-top: 10px;
     margin-bottom: 0px;
   }
 

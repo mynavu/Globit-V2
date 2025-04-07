@@ -44,6 +44,7 @@
     align-items: center;
     border-bottom: black solid 3px;
     z-index: 2;
+    padding: 0px;
   }
 
   .menu {
@@ -70,6 +71,11 @@
     width: 30px;
     height: 30px;
     transform: translate(-100%, 2%);
+  }
+
+  .grid, .grid2 {
+    display: grid;
+    grid-template-columns: 13% 60% 27%;
   }
 
   .Icon {
@@ -171,9 +177,13 @@
     font-size: 14px;
   }
 
-  .mode, .spin {
-    display: none;
-}
+  .spin {
+    font-weight: 650;
+    color: black;
+    margin-left: 10px;
+    font-size: 14px;
+  }
+
 
 .container {
     top: 10px;
@@ -185,6 +195,11 @@
     justify-content: center;
     margin-right: 10px;
   }
+
+  input {
+    display: block;
+  }
+  
 
   .container1 {
     top: 50px;
@@ -221,9 +236,20 @@
     margin: 2.5px;
     transition: 0.2s;
   }
+
   
   input:checked + .modeButton1::before {
     transform: translateX(25px);
+  }
+
+  .modeButton {
+    background-color: var(--blue);
+    width: 50px;
+    height: 25px;
+    border-radius: 50px;
+    cursor: pointer;
+    position: relative;
+    transition: 0.2s;
   }
 
   .modeButton::before {
@@ -258,6 +284,14 @@
 
 .logOut {
     grid-column: 12;
+    padding: 0px;
+    height: 100%;
+}
+
+#username {
+    margin-bottom: 5px;
+    margin-top: 10px;
+    text-align: center;
 }
 
 #logOutButton {
@@ -268,11 +302,16 @@
     border: black solid 2px;
     color: black;
     font-weight: 700;
-    display: inline-block;
+    display: block;
     text-align: center;
-    position: relative;
+    margin: 0 auto;
     cursor: pointer;
-  }
+}
+
+#logOutButton:hover {
+    background-color: black;
+    color: white;
+}
 
   .average {
     font-weight: 600;
@@ -295,6 +334,10 @@
     flex-direction: row;
     justify-content: space-between;
     gap: 20px;
+  }
+
+  .margin-top {
+    margin-top: 10px;
   }
 
   .small-margin {

@@ -92,7 +92,7 @@ p {
     right: 60px;
     bottom: 30px;
     background: white;
-    z-index: 3;
+    z-index: 1;
     border: black solid 3px;
     border-radius: 20px;
     box-shadow: 2px 2px 0 0px black;
@@ -101,6 +101,7 @@ p {
 .weatherIcon {
     font-size: 15px;
 }
+
 
   .text {
     font-family: "Noto Sans Display", sans-serif;
@@ -322,6 +323,8 @@ p {
   
   #submitButton:hover {
     cursor: pointer;
+    background-color: black;
+    color: white;
   }
 
   .mapboxgl-popup-content {
@@ -406,7 +409,7 @@ p {
     position: fixed;
     bottom: 32px;
     right: -100px;
-    z-index: 2;
+    z-index: 3;
     position: absolute;
     flex-direction: row;
     align-items: center;

@@ -16,14 +16,8 @@ document.addEventListener('DOMContentLoaded', () => {
             
             if (error) {
                 alert('Sign-up error: ' + error.message);
+                return;
             } 
-
-            alert('Login successful!')
-
-            const { data: supaData, error: dataError } = await supabase
-                    .from('users')
-                    .select()
-                    console.log(supaData)
             window.location.href = '../../pages/globe.html'
     })
 

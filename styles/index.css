@@ -17,4 +17,81 @@ body {
     padding: 0;
     background: var(--white);
     overflow: hidden;
+    height: 100vh;
+    background: linear-gradient(white 0%, var(--blue) 100%);
   }
+
+  .signUp {
+    background-color: white;
+    width: auto;
+    padding: 3px 10px 3px 10px;
+    border-radius: 20px;
+    border: black solid 2px;
+    color: black;
+    font-weight: 700;
+    display: inline-block; /* Fixed from "block-inline" which isn’t valid */
+    text-align: center;
+    cursor: pointer;
+}
+
+h2 {
+  text-align: center;
+}
+
+.indexContainer {
+  position: relative;
+  top: 100px;
+  background: -webkit-linear-gradient(top, var(--light-orange) 0%, var(--orange) 100%);
+  border: 2px solid black;
+  width: 30%;
+  border-radius: 30px;
+  padding: 10px;
+  box-shadow: 5px 5px 0 0px black;
+  display: flex;
+  justify-content: center;
+  margin: auto;
+}
+
+input {
+    background-color: white;
+    color: black;
+    border: none;
+    height: 30px;
+    border-radius: 20px;
+    border: solid black 2px;
+    padding-left: 5px;
+}
+
+/* New styling for label-input pairs */
+.input-group {
+    display: flex;
+    align-items: center; /* Vertically centers label and input */
+    margin-bottom: 10px; /* Adds space between email and password rows */
+}
+
+.input-group label {
+    margin-right: 10px; /* Space between label and input */
+    white-space: nowrap; /* Prevents label text from wrapping */
+}
+
+.input-group input {
+    flex: 1; /* Allows input to take remaining space */
+}
+
+.submit {
+  background-color: white;
+    width: 100%;
+    padding: 3px 10px 3px 10px;
+    border-radius: 20px;
+    border: black solid 2px;
+    color: black;
+    font-weight: 700;
+    display: inline-block; /* Fixed from "block-inline" which isn’t valid */
+    text-align: center;
+    cursor: pointer;
+}
+
+.submit:hover, .signUp:hover {
+  background-color: black;
+  color: white;
+}

@@ -19,3 +19,141 @@ body {
     height: 100%;
     overflow-x: hidden;
   }
+
+  .mostPostedCountryImg {
+    width: 100px !important;
+  }
+
+
+
+.background {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    background: linear-gradient(white 20%, var(--blue) 50%);
+  }
+
+  .leftbar {
+    height: auto;
+    grid-column: 1;
+  }
+
+  .mainbar {
+    height: auto;
+    grid-column: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    align-content: start;
+    align-items: center;
+    margin-bottom: 20px;
+    z-index: 1;
+    padding-bottom: 100px;
+  }
+
+  .stampsCollection {
+    height: fit-content;
+    width: 100%;
+    background: -webkit-linear-gradient(top, #ffad7a 0%, var(--orange) 50%);
+    border: black solid 3px;
+    border-radius: 50px;
+    margin-top: 100px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-left: 40px;
+    padding-right: 40px;
+    box-shadow: 5px 5px 0 0px black;
+    padding-bottom: 40px;
+  }
+
+  .suggestionStatement,
+  .stampsReminder,
+  .countriesReminder,
+  .mostPostedCountryData {
+    text-align: center;
+  }
+
+  .allStamps {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    gap: 3px;
+  }
+
+  .allStamps img {
+    width: 150px;
+  }
+
+  .countriesCollection {
+    width: 100%;
+    height: fit-content;
+    background: -webkit-linear-gradient(top, #ffad7a 0%, var(--orange) 50%);
+    border: black solid 3px;
+    border-radius: 50px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-left: 40px;
+    padding-right: 40px;
+    box-shadow: 5px 5px 0 0px black;
+    padding-bottom: 40px;
+  }
+
+  .allCountries img {
+    width: 100px;
+  }
+  
+  .allCountries {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    gap: 15px;
+  }
+
+  .rightbar {
+    height: auto;
+    grid-column: 3;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .recap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: auto;
+    width: 290px;
+    border-radius: 40px;
+    border: solid black 4px;
+    background: -webkit-linear-gradient(top, #ffad7a 0%, var(--orange) 100%);
+    margin-top: 100px;
+    box-shadow: 5px 5px 0 0px black;
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+    padding-right: 15px;
+    padding-left: 15px;
+  }
+
+  .suggestion {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: auto;
+    width: 290px;
+    border-radius: 40px;
+    border: solid black 4px;
+    background: -webkit-linear-gradient(top, #ffad7a 0%, var(--orange) 100%);
+    box-shadow: 5px 5px 0 0px black;
+    padding-bottom: 20px;
+    padding-right: 15px;
+    padding-left: 15px;
+  }
+  
+  .suggestion img {
+    width: 150px;
+  }
