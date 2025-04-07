@@ -34,7 +34,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     //console.log(userData);
     const userID = userData.id;
 
-    const usernameDisplay = document.getElementById('username');
+    const usernameDisplay = document.getElementById('username1');
     usernameDisplay.innerText = `@${userData.username}`;
 
 
