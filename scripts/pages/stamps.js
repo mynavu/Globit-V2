@@ -32,15 +32,15 @@ document.addEventListener("DOMContentLoaded", async () => {
         window.location.href = "index.html";
         return;
     }
-    console.log("session.user",session.user)
+    //console.log("session.user",session.user)
 
     const { data: userData, error: dataError } = await supabase
     .from('users')
     .select()
     .eq('email', session.user.email)
     .single();
-    console.log(`Welcome user: ${JSON.stringify(userData.username)}`)
-    console.log(userData);
+    //console.log(`Welcome user: ${JSON.stringify(userData.username)}`)
+    //console.log(userData);
     const userID = userData.id;
 
     const usernameDisplay = document.getElementById('username');
@@ -52,7 +52,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         .select('country')
         .eq('user_id', userID)
         .not('country', 'is', null);
-        console.log("COUNTRY LIST", countryList);
+        //console.log("COUNTRY LIST", countryList);
 
         const countryFrequency = new Map();
     
@@ -64,8 +64,6 @@ document.addEventListener("DOMContentLoaded", async () => {
             countryFrequency.set(country, 1)
         }
     })
-
-    console.log(countryFrequency);
 
     let maxCount = 0;
     let maxCountry;
@@ -92,9 +90,10 @@ document.addEventListener("DOMContentLoaded", async () => {
         mostPostedCountryData.innerHTML = "Start posting to get a recap of your journey!"
     };
     
-        if (countryList.length > 0) {
+        if (countryFrequency.size > 0) {
             countriesReminder.style.display = "none";
-            countriesNumber.innerText = countryList.length;
+            //console.log("countryFrequency",countryFrequency.size);
+            countriesNumber.innerText = countryFrequency.size
             for (const [country, count] of countryFrequency) {
                 const formattedCountry = country.replaceAll(' ', '_');
                 if (formattedCountry === "Türkiye") {
@@ -125,21 +124,23 @@ document.addEventListener("DOMContentLoaded", async () => {
         .eq('user_id', userID)
         .not('stamp', 'is', null);
 
-    if (stampList.length > 0) {
+    const stampValues = [...new Set(stampList.map(item => item.stamp))];
+    //console.log("stampValues",stampValues);
+
+    if (stampValues.length > 0) {
         credits.style.display = "block";
         stampsReminder.style.display = "none";
-        stampsNumber.innerText = stampList.length;
-        stampList.forEach((stamp) => {
-            stamp = stamp.stamp;
-            console.log("stamp", stamp)
+        stampsNumber.innerText = stampValues.length;
+        stampValues.forEach((stamp) => {
             let formattedStamp = stamp.replaceAll(' ', '_');
-            console.log("formattedStamp", formattedStamp)
+            //console.log("formattedStamp", formattedStamp)
             const HTMLString = `<img src=https://esrkdaokgokznnqzgwrg.supabase.co/storage/v1/object/public/stamp-images/${formattedStamp}.PNG>`;
             allStamps.insertAdjacentHTML('beforeend', HTMLString);
           });
     }
 
-    const stampsLeft = totalStamps.filter((stamp) => (!stampList.includes(stamp.stamp)));
+    const stampsLeft = totalStamps.filter((stamp) => (!stampValues.includes(stamp.city)));
+    //console.log("stampsLeft",stampsLeft);
         const randomIndex = Math.floor(Math.random() * stampsLeft.length);
         const randomSuggestion = stampsLeft[randomIndex];
         suggestionCountry.innerText = randomSuggestion.country;

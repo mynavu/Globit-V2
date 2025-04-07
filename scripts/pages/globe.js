@@ -23,15 +23,15 @@ document.addEventListener("DOMContentLoaded", async () => {
         window.location.href = "index.html";
         return;
     }
-    console.log("session.user",session.user)
+    //console.log("session.user",session.user)
 
     const { data: userData, error: dataError } = await supabase
     .from('users')
     .select()
     .eq('email', session.user.email)
     .single();
-    console.log(`Welcome user: ${JSON.stringify(userData.username)}`)
-    console.log(userData);
+    //console.log(`Welcome user: ${JSON.stringify(userData.username)}`)
+    //console.log(userData);
     const userID = userData.id;
 
     const usernameDisplay = document.getElementById('username');
@@ -53,7 +53,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (listOfPostsErrors) {
         console.log("error",listOfPostsErrors.message);
     }
-    console.log("listOfPosts", listOfPosts);
+    //console.log("listOfPosts", listOfPosts);
 
     let geojson = {
         "type": "FeatureCollection",
@@ -101,9 +101,9 @@ document.addEventListener("DOMContentLoaded", async () => {
             }))
           }; 
         map.getSource('points').setData(geojson);
-        console.log(geojson);
+        //console.log(geojson);
     }
-      console.log("geojson",geojson);
+     //console.log("geojson",geojson);
 
     let currentLocation = {
         "type": "FeatureCollection",
@@ -148,6 +148,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     }
 
+    /*
+
     map.on('load', () => {
         plusButton.style.display = 'flex';
         addPointsLayer(map, geojson);
@@ -158,6 +160,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         plusButton.style.display = 'flex';
         addPointsLayer(map, geojson);
     });
+
+    */
 
     function addCurrentLocation(map, currentLocation) {
         if (!map.getSource('currentPoint')) {
@@ -230,24 +234,48 @@ navigator.geolocation.getCurrentPosition(position => {
     if (currentLocation.features.length === 0) {
    currentLocation.features.push(point);
    };
+   const performStyleDependentActions = () => {
+    if (currentLocation.features.length > 0) {
+                addCurrentLocation(map, currentLocation);
+                const weather = `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=71eda31f2208ffe09fa48962d3a84835`;
+                fetch(weather)
+                .then(response => response.json())
+                .then(data => {
+                    const tempInCelsius = Math.floor(parseFloat(data.main.temp) - 273.15).toString();
+                    const iconName = data.weather[0].icon;
+                    weatherDisplay.innerHTML = `${weatherIcon[iconName]} &nbsp ${tempInCelsius}°`;
+                    weatherDisplay.style.display = "block";
 
-   if (currentLocation.features.length > 0) {
-       if (map.isStyleLoaded()) {
-              addCurrentLocation(map, currentLocation);
-              const weather = `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=71eda31f2208ffe09fa48962d3a84835`;
-              fetch(weather)
-              .then(response => response.json())
-              .then(data => {
-                console.log(data.weather, data.main);
-                const tempInCelsius = Math.floor(parseFloat(data.main.temp) - 273.15).toString();
-                const iconName = data.weather[0].icon;
-                weatherDisplay.innerHTML = `${weatherIcon[iconName]} &nbsp ${tempInCelsius}°`;
-                weatherDisplay.style.display = "block";
-
-              })
-              .catch(error => console.log("error"));
-       }
-   }
+                })
+                .catch(error => console.log("error"));
+        }
+    }
+    if (map.isStyleLoaded()) {
+        performStyleDependentActions();
+        plusButton.style.display = 'flex';
+        addPointsLayer(map, geojson);
+    } else {
+        /*
+        map.on('style.load', () => {
+            performStyleDependentActions();
+        });
+        map.on('load', () => {
+            performStyleDependentActions();
+        });
+        */
+        map.on('load', () => {
+            plusButton.style.display = 'flex';
+            addPointsLayer(map, geojson);
+            performStyleDependentActions();
+            
+        });
+        
+        map.on('style.load', () => {
+            plusButton.style.display = 'flex';
+            addPointsLayer(map, geojson);
+            performStyleDependentActions();
+        });
+    }
 });
 
     let hoverPopup = null;
@@ -300,9 +328,9 @@ navigator.geolocation.getCurrentPosition(position => {
         .select()
         .eq('post_id', post_id)
         .single();
-        console.log("urlData", urlData);
+        //console.log("urlData", urlData);
         let imagePath = urlData.image_url.split('/posts-images/')[1];
-        console.log("imagePath", imagePath);
+        //console.log("imagePath", imagePath);
         if (urlError) {
             alert("urlError", urlError);
         }
@@ -314,7 +342,7 @@ navigator.geolocation.getCurrentPosition(position => {
             if (error) {
                 alert("Error in deleting image in bucket:", error.message);
             }
-            console.log("deleted")
+            //console.log("deleted")
         }
 
         const response = await supabase
@@ -356,28 +384,29 @@ navigator.geolocation.getCurrentPosition(position => {
 
   async function receiveStamp(location) {
     let stampRecieved = false;
+    let stampMatched = false;
 
         const { data: stampList, error: stampListError } = await supabase
         .from('posts')
         .select('stamp')
         .eq('user_id', userID)
-
-        console.log("Location:", location);
+        const stampValues = stampList.map(item => item.stamp);
+        //console.log("Location:", location);
         matchList.forEach(({ regex, stamp }) => {
             if (location.match(regex)) { 
-                if (!stampList.includes(stamp)) {
+                stampMatched = stamp;
+                if (!stampValues.includes(stamp)) {
                     stampRecieved = stamp;
-                    console.log("stamps recieved:", stampRecieved);
-                    return stampRecieved;
+                    return [stampRecieved, stampMatched];
                     }
             }
         });
-        return stampRecieved;
+        return [stampRecieved, stampMatched];
     }
 
     function stampNotify(stamp) {
         const formattedStamp = stamp.replaceAll("_", " ");
-        console.log("formattedStamp",formattedStamp);
+        //console.log("formattedStamp",formattedStamp);
         let imageLink = `https://esrkdaokgokznnqzgwrg.supabase.co/storage/v1/object/public/stamp-images//${stamp}.PNG`
         const HTMLString = `
         <div class="stampNotif">
@@ -423,7 +452,7 @@ navigator.geolocation.getCurrentPosition(position => {
             location = data.features[indexLocation].properties.full_address;
             countryName = data.features[indexLocation].properties.context.country.name;
         } catch (error) {
-            console.log('Error fetching or processing geocoding data');
+            //console.log('Error fetching or processing geocoding data');
             location = "Unknown Location";
             countryName = null;
         }
@@ -495,18 +524,19 @@ navigator.geolocation.getCurrentPosition(position => {
                     return;
                 }
                 let stamp = await receiveStamp(location);
-                if (stamp !== false) {
-                    console.log("New stamp", stamp);
+                if (stamp[1] !== false) {
                     const { data: insertData, error: insertError } = await supabase
                     .from('posts')
                     .update({ 
-                        stamp: stamp
+                        stamp: stamp[1]
                     })
                     .eq('post_id', currentPostID);
                     if (insertError) {
                         alert("Stamp error", insertError.message);
                     }
-                    stampNotify(stamp);
+                    if (stamp[0] !== false) {
+                        stampNotify(stamp[0]);
+                    };
                 }
             }
             entry.close();
@@ -535,7 +565,7 @@ navigator.geolocation.getCurrentPosition(position => {
         .from('posts')
         .select('image_url')
         .eq('user_id', userID)
-        console.log("data", data);
+        //console.log("data", data);
 
         const promises = data.map(url => {
             return new Promise((resolve, reject) => {
@@ -568,10 +598,12 @@ navigator.geolocation.getCurrentPosition(position => {
             const description = feature.properties.description || "No description";
             const post_id = feature.properties.post_id;
 
+            /*
             console.log("e", e);
             console.log('Feature:', feature);
             console.log("e.features", e.features);
             console.log("post_id",post_id);
+            */
 
             if (currentImage) {
                 console.log(`Image URL: ${currentImage}`);
@@ -670,9 +702,6 @@ navigator.geolocation.getCurrentPosition(position => {
         });
     });
 
-
-
-
     const logOutButton = document.getElementById("logOutButton")
     logOutButton.addEventListener("click", async () => {
         const { error: logOutError } = await supabase.auth.signOut()
@@ -685,7 +714,6 @@ navigator.geolocation.getCurrentPosition(position => {
 
 
     //SEARCH BAR AND OTHER CONTROLS
-
             const geocoder = new MapboxGeocoder({
                 accessToken: mapboxgl.accessToken,
                 types: 'address,poi',
@@ -743,7 +771,7 @@ navigator.geolocation.getCurrentPosition(position => {
         }
         
         function lightMode() {
-                console.log("Light Mode");
+                //console.log("Light Mode");
                 localStorage.setItem('checkboxState', JSON.stringify(modeButton.checked));
                 map.setStyle('mapbox://styles/mynavu/cm3std23v009l01sd8csudg7h'); // Light mode style
                 map.on('style.load', () => {
@@ -759,11 +787,11 @@ navigator.geolocation.getCurrentPosition(position => {
             modeButton.checked = JSON.parse(savedState);
           };
           modeButton.checked ? darkMode() : lightMode();
-          console.log("modeButton.checked", modeButton.checked);
+          //console.log("modeButton.checked", modeButton.checked);
       
       modeButton.addEventListener('change', () => {
           modeButton.checked ? darkMode() : lightMode();
-          console.log("on change modeButton.checked", modeButton.checked);
+          //console.log("on change modeButton.checked", modeButton.checked);
       });
 
 
