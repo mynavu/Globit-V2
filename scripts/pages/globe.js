@@ -148,7 +148,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     }
 
-    /*
+
 
     map.on('load', () => {
         plusButton.style.display = 'flex';
@@ -161,7 +161,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         addPointsLayer(map, geojson);
     });
 
-    */
+
 
     function addCurrentLocation(map, currentLocation) {
         if (!map.getSource('currentPoint')) {
@@ -759,7 +759,6 @@ navigator.geolocation.getCurrentPosition(position => {
             const savedState = localStorage.getItem('checkboxState');
 
             function darkMode() {
-                console.log("Dark Mode");
                 localStorage.setItem('checkboxState', JSON.stringify(modeButton.checked));
                 map.setStyle('mapbox://styles/mynavu/cm4b3wrge01bm01si09uyal4o');
                 map.on('style.load', () => {
