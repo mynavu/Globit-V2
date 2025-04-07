@@ -157,3 +157,21 @@ body {
   .suggestion img {
     width: 150px;
   }
+
+  @media (max-width: 1000px) {
+    .stampsCollection, .countriesCollection {
+      width: 80%;
+      margin-right: 0px;
+    }
+
+    .stampsCollection h1, .countriesCollection h1 {
+      font-size: 20px;
+      text-align: center;
+    }
+  
+    .stampsCollection h4, .countriesCollection h4 {
+      font-size: 12px;
+      text-align: center;
+    }
+
+  }

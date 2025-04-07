@@ -286,6 +286,7 @@
     grid-column: 12;
     padding: 0px;
     height: 100%;
+    width: 100%;
 }
 
 #username {
@@ -348,3 +349,95 @@
   .thick {
     font-weight: 800;
   }
+
+  
+
+  @media (max-width: 1000px) {
+
+    .p1 {
+        display: none;
+      }
+
+    .logOut {
+        grid-column: 10 / 13;
+    }
+
+    #map {
+        height: calc(90vh - 80px) !important;
+    }
+
+    .menu svg {
+        transform: translate(-100%, 3%);
+      }
+
+      .menu {
+        width: 100%;
+        left: 0px;
+        bottom: 0;
+        top: unset;
+        flex-direction: row !important;
+        justify-content: center;
+        border-radius: 0px;
+        box-shadow: 0px 0px 0 0px black;
+        border: 0px solid black;
+        border-top: 3px solid black;
+        height: calc(10vh);
+      }
+
+      .customization {
+        left: 10px;
+        top: 90px;
+        right: 50px;
+        padding-top: 12px;
+        padding-bottom: 12px;
+        width: 100px;
+        box-shadow: 3px 3px 0 0px black;
+      }
+
+      .mode, .spin {
+        display: none;
+    }
+
+      .Icon {
+        height: 52px;
+        width: 60px;
+        border-radius: 18px;
+        display: flex;
+        justify-content: center;
+        padding-left: 30px;
+        margin: 0;
+      }
+
+      .menuGlobe, .menuSettings, .menuStamps, .menuHome  {
+        display: flex;
+        justify-content: center;
+        width: auto;
+      }
+    
+      .grid, .grid2 {
+        display: flex !important;
+        justify-content: center !important;
+        grid-template-columns: unset !important;
+      }
+    
+    
+      .rightbar, .rightbar2 {
+        background: red;
+        grid-column: unset;
+        display: none !important;
+      }
+
+      .mainbar, .mainbar2 {
+        /*
+        background: blue;
+        */
+        grid-column: unset !important;
+        align-items: center !important;
+        }
+      
+
+  }
+
+
+
+  
