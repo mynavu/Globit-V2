@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 alert('Sign-up error: ' + error.message);
                 return;
             } 
-            window.location.href = '../../pages/globe.html'
+            window.location.href = './pages/globe.html'
     })
 
 })

@@ -27,7 +27,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const { data: { session }, error } = await supabase.auth.getSession();
     if (!session || error) {
         alert("You have to login")
-        window.location.href = "index.html";
+        window.location.href = '../../index.html';
         return;
     }
     console.log("session.user",session.user)
@@ -151,7 +151,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             if (logOutError) {
                 alert("Theres an error: ", logOutError.message);
             } else {
-                window.location.href = '../../pages/index.html'
+                window.location.href = '../../index.html'
             }
         })
 

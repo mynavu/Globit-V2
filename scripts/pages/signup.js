@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (insertError) {
                 alert('Insert error: ' + insertError.message)
             } else {
-                window.location.href = '../../pages/index.html';
+                window.location.href = '../../index.html';
                 
             }
 
