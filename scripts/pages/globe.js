@@ -717,6 +717,7 @@ navigator.geolocation.getCurrentPosition(position => {
             const geocoder = new MapboxGeocoder({
                 accessToken: mapboxgl.accessToken,
                 types: 'address,poi',
+                mapboxgl: mapboxgl,
                 proximity: [-73.99209, 40.68933]
             });
             map.addControl(geocoder, 'top-right');

@@ -147,6 +147,8 @@ p {
   .discardMessage {
     font-weight: 500;
     text-align: center;
+    font-size: 18px;
+    margin-top: 5px;
   }
   
   .buttonContainer {
@@ -193,6 +195,8 @@ p {
     border-color: black;
     box-shadow: 5px 5px 0 0px black;
     box-sizing: content-box;
+    overflow: hidden;
+
   }
 
   .exit-button {
@@ -227,6 +231,7 @@ p {
     border: black solid 2px;
     display: inline-flex;
     cursor: pointer;
+    font-weight: 500;
   }
   
   #somewhereElseButton {
@@ -238,6 +243,7 @@ p {
     border: black solid 2px;
     display: inline-flex;
     cursor: pointer;
+    font-weight: 500;
   }
 
   #entry {
@@ -278,9 +284,6 @@ p {
   input[type="text"]:focus {
     border: solid black 2px;
     outline: none; /* This removes the blue border */
-  }
-  
-  input[type="file"] {
   }
   
   input::file-selector-button {
@@ -486,7 +489,38 @@ p {
   100%{transform: rotate(1turn)}
 }
 
-@media (max-width: 1000px) {
+@media (max-width: 800px) {
+
+  input[type="text"].description {
+    margin-bottom: 0px;
+  }
+
+  #confirmCloseButton {
+    overflow: hidden;
+  }
+
+  .discardMessage {
+    font-size: 16px;
+  }
+
+  .group { 
+    display: block;
+    margin-top: 5px;
+  }
+
+  .post-text {
+    margin-top: 0px;
+    display: block;
+    text-align: center;
+    font-size: 15px;
+  }
+
+  input[type="file"] {
+    display: block;
+    text-align: center;
+    
+  }
+
 
   .stampNotif {
     height: 100px;
@@ -525,10 +559,10 @@ p {
 
 
   .text {
-    font-size: 20px;
-    bottom: 12vh;
-    left: 50%;
-    transform: translateX(-50%);
+    font-size: 16px;
+    bottom: 15vh;
+    right: 1vh;
+    width: 50%;
   }
 
 }

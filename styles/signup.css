@@ -80,20 +80,10 @@ input {
 }
 
 .logIn {
-  background-color: white;
-  width: auto;
-  padding: 8px 15px;
-  border-radius: 20px;
-  border: black solid 2px;
-  color: black;
-  font-weight: 700;
-  display: inline-block;
-  text-align: center;
-  cursor: pointer;
-  font-size: 16px;
+  text-decoration: underline;
 }
 
-.submit:hover, .logIn:hover {
+.submit:hover {
   background-color: black;
   color: white;
 }
