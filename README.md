@@ -4,6 +4,10 @@ Globit V2 is the second iteration of **Globit**, a location-based social media a
 
 This project was my **first full-stack application** and marked a significant step in my web development journey. The original version of Globit was built with **vanilla JavaScript**, while this second iteration was rebuilt using **React**, resulting in a more maintainable codebase and a much smoother user experience.
 
+🌐 **Live Demo:** https://globit.netlify.app
+
+> **⚠️ Note:** The application may not function correctly because the Supabase project is currently paused. Backend services such as authentication, database access, and image storage will be unavailable until the project is resumed.
+
 ## Features
 
 - 🌍 Explore posts pinned to an interactive 3D globe
